@@ -3,91 +3,98 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neon Coast Cover Studio — GTA 6-style cover art maker</title>
+<title>Palm Bay Cover Studio — GTA 6-style cover maker</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23ffb347'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ff5e8a'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="css/studio.css">
-<style>
-@font-face {
-  font-family: "Anton";
-  src: url("type/anton.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
-}
-@font-face {
-  font-family: "Pacifico";
-  src: url("type/pacifico.ttf") format("truetype");
-  font-weight: 400;
-  font-display: swap;
-}
-</style>
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <span class="brand-star">★</span>
+    <span class="brand-mark">☀</span>
     <div>
-      <h1>Neon Coast Cover Studio</h1>
-      <p>Turn any photo into GTA 6-style cover art — offline, in your browser.</p>
+      <h1>Palm Bay Cover Studio</h1>
+      <p>Turn your photos into GTA 6-style cover art — offline, in your browser.</p>
     </div>
   </div>
   <div class="top-actions">
-    <button id="undoBtn" class="btn" type="button">↩ Undo</button>
-    <button id="redoBtn" class="btn" type="button">↪ Redo</button>
-    <button id="shuffleBtn" class="btn accent" type="button">🎲 Surprise me</button>
+    <button id="undoBtn" type="button" disabled>↩ Undo</button>
+    <button id="redoBtn" type="button" disabled>↪ Redo</button>
+    <button id="surpriseBtn" type="button" class="accent">✦ Surprise me</button>
   </div>
 </header>
 
-<main class="workspace">
+<main class="studio">
   <section class="preview-pane">
-    <canvas id="preview" width="960" height="720" aria-label="Cover preview"></canvas>
-    <p class="hint">Click a panel to select it, drag to reframe the photo, use the zoom slider to tighten the crop.</p>
-    <div class="panel-tools">
-      <span id="panelLabel">Panel 1 of 3</span>
-      <label>Zoom <input id="zoomSlider" type="range" min="100" max="260" value="100"></label>
+    <canvas id="preview" width="960" height="540" aria-label="Cover preview"></canvas>
+    <p id="panelLabel" class="hint">Panel 1 selected — drag to move, slider to zoom</p>
+    <div class="crop-row">
+      <label for="zoomRange">Zoom</label>
+      <input id="zoomRange" type="range" min="1" max="2.5" step="0.05" value="1">
+      <button id="centerCropBtn" type="button">Center crop</button>
+    </div>
+    <div class="export-row">
+      <div class="size-group" role="group" aria-label="Export size">
+        <button type="button" class="size-btn" data-size="square">1080 × 1080</button>
+        <button type="button" class="size-btn" data-size="portrait">1080 × 1350</button>
+        <button type="button" class="size-btn active" data-size="wide">1920 × 1080</button>
+        <button type="button" class="size-btn" data-size="tall">1080 × 1920</button>
+      </div>
+      <button id="exportBtn" type="button" class="accent big">Export PNG</button>
     </div>
   </section>
 
   <aside class="controls">
-    <section>
-      <h2>1 · Layout</h2>
-      <div id="layoutRow" class="chip-row"></div>
+    <section class="card">
+      <h2>1 · Photos</h2>
+      <p class="card-note">Upload your own (1–4), or cycle the warm sample scenes.</p>
+      <div id="photoSlots" class="slots"></div>
     </section>
 
-    <section>
-      <h2>2 · Colour grade</h2>
-      <div id="gradeRow" class="swatch-row"></div>
+    <section class="card">
+      <h2>2 · Layout</h2>
+      <p class="card-note">One hero panel + smaller panels, white gutters, diagonal cuts.</p>
+      <div id="layoutPicker" class="picks"></div>
     </section>
 
-    <section>
-      <h2>3 · Photos</h2>
-      <div id="photoTray" class="photo-tray"></div>
-      <label class="upload-btn">＋ Upload your own photo
-        <input id="uploadInput" type="file" accept="image/*" hidden>
+    <section class="card">
+      <h2>3 · Grade</h2>
+      <p class="card-note">Warm sunset grades. Skin-safe: midtones stay natural.</p>
+      <div id="gradePicker" class="picks"></div>
+    </section>
+
+    <section class="card">
+      <h2>4 · Words</h2>
+      <label class="field">Title
+        <input id="titleInput" type="text" value="PALM BAY" maxlength="24">
       </label>
-      <p class="fine">Photos stay on your machine — nothing is uploaded.</p>
+      <label class="field">Subtitle (script)
+        <input id="subtitleInput" type="text" value="where the sun never sets on the fun" maxlength="60">
+      </label>
+      <label class="field">Press quote
+        <input id="quoteInput" type="text" value="A FEVER DREAM IN NEON" maxlength="48">
+      </label>
+      <label class="field">Quote source
+        <input id="quoteByInput" type="text" value="THE COAST HERALD" maxlength="32">
+      </label>
+      <label class="field">Location pill
+        <input id="pillInput" type="text" value="CORAL CAUSEWAY • 7:15 PM" maxlength="40">
+      </label>
+      <label class="field">Tag pills (comma separated)
+        <input id="tagsInput" type="text" value="OPEN WORLD, 2 PLAYERS, 4K" maxlength="48">
+      </label>
+      <label class="field">Bottom strip tagline
+        <input id="taglineInput" type="text" value="ONE COAST • NO RULES • COMING SOON" maxlength="48">
+      </label>
     </section>
 
-    <section>
-      <h2>4 · Caption</h2>
-      <label>Title <input id="titleInput" type="text" value="NEON COAST" maxlength="24"></label>
-      <label>Subtitle <input id="subtitleInput" type="text" value="Vice City nights, your story" maxlength="60"></label>
-      <label>Badge <input id="badgeInput" type="text" value="NEON COAST" maxlength="16"></label>
-      <label>Heat meter</label>
-      <div id="starRow" class="star-row"></div>
-    </section>
-
-    <section>
-      <h2>5 · Export PNG</h2>
-      <div id="sizeRow" class="chip-row"></div>
-      <p class="fine">One click per size. The PNG is drawn by the app itself — what you see is what you share.</p>
-    </section>
+    <p class="fineprint">All photos stay on your machine — nothing is uploaded.
+    Fonts: Anton, Pacifico and Barlow Condensed (SIL Open Font License).
+    A fan-made cover maker; not affiliated with Rockstar Games.</p>
   </aside>
 </main>
 
-<footer class="statusbar">
-  <span id="statusLine">Loading…</span>
-  <span class="offline-tag">● Offline — no network requests</span>
-</footer>
-
-<script type="module" src="js/studio.js"></script>
+<script src="js/poster.js"></script>
+<script src="js/shots.js"></script>
+<script src="js/studio.js"></script>
 </body>
 </html>
