@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Neon Coast Cover Studio — GTA-style cover maker</title>
+<link rel="stylesheet" href="./style.css">
+</head>
+<body>
+<main class="app">
+  <section class="controls" aria-label="Cover controls">
+    <h1>Neon Coast Cover Studio</h1>
+    <p class="tagline">Turn your photos into a GTA-style multi-panel cover. Everything runs offline, in your browser — your photos never leave this machine.</p>
+
+    <div class="group">
+      <label class="file-label">Photos (1–4)
+        <input id="photos" type="file" accept="image/*" multiple>
+      </label>
+      <p class="hint">Or drag photos onto the page. Click a sample to start fast:</p>
+      <div class="samples" id="samples">
+        <button type="button" data-sample="boulevard">Boulevard</button>
+        <button type="button" data-sample="pier">Pier</button>
+        <button type="button" data-sample="scooter">Scooter</button>
+        <button type="button" data-sample="gasstation">Gas station</button>
+      </div>
+      <p class="hint" id="photoCount">No photos yet — pick a sample above.</p>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Layout</span>
+      <div class="chips" id="layouts"></div>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Grade</span>
+      <div class="chips" id="grades"></div>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Panel <span id="panelName">1</span> — drag the preview to pan, scroll to zoom</span>
+      <label>Zoom <input id="zoom" type="range" min="1" max="3" step="0.05" value="1"></label>
+      <div class="row">
+        <button type="button" id="prevPanel">‹ Prev panel</button>
+        <button type="button" id="nextPanel">Next panel ›</button>
+      </div>
+    </div>
+
+    <div class="group">
+      <label>Title <input id="title" type="text" maxlength="40" value="Sunset Heist"></label>
+      <label>Subtitle <input id="subtitle" type="text" maxlength="40" value="Neon Coast nights"></label>
+      <label>Badge <input id="badge" type="text" maxlength="20" value="Neon Coast"></label>
+      <label>Heat (stars)
+        <select id="heat">
+          <option value="1">★</option>
+          <option value="2">★★</option>
+          <option value="3">★★★</option>
+          <option value="4" selected>★★★★</option>
+          <option value="5">★★★★★</option>
+        </select>
+      </label>
+      <label class="check"><input id="showBadge" type="checkbox" checked> Show badge ribbon</label>
+      <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
+      <label class="check"><input id="vignette" type="checkbox" checked> Vignette</label>
+    </div>
+
+    <div class="group">
+      <span class="group-label">Export PNG</span>
+      <div class="exports" id="exports"></div>
+      <div class="row">
+        <button type="button" id="undo">Undo</button>
+        <button type="button" id="redo">Redo</button>
+        <button type="button" id="reset">Reset</button>
+      </div>
+      <p id="status" role="status"></p>
+    </div>
+  </section>
+  <section class="stage">
+    <canvas id="cover" width="1080" height="1080" aria-label="The cover preview"></canvas>
+    <p class="hint">Preview is a smaller render of the same pipeline as the export.</p>
+  </section>
+</main>
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>

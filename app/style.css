@@ -1,0 +1,36 @@
+@font-face { font-family: 'Anton'; src: url('./fonts/Anton-Regular.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Pacifico'; src: url('./fonts/Pacifico-Regular.ttf') format('truetype'); font-display: swap; }
+
+* { box-sizing: border-box; }
+html, body { margin: 0; min-height: 100%; background: #160a24; color: #f5eefc; font: 15px/1.45 system-ui, sans-serif; }
+.app { display: flex; gap: 28px; padding: 22px; max-width: 1400px; margin: 0 auto; align-items: flex-start; }
+.controls { width: 330px; flex-shrink: 0; display: flex; flex-direction: column; gap: 16px; }
+.controls h1 { margin: 0; font-family: Anton, sans-serif; font-size: 30px; letter-spacing: 0.5px; color: #ffe08a; }
+.tagline { margin: 0; color: #c9b3e0; }
+.group { background: #241238; border: 1px solid #4a2a6e; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.group-label { font-weight: 700; color: #ffe08a; }
+.hint { margin: 0; color: #b9a3cf; font-size: 13px; }
+label { display: flex; flex-direction: column; gap: 5px; font-weight: 600; }
+label.check { flex-direction: row; align-items: center; gap: 8px; font-weight: 400; }
+input[type=text], select { font: inherit; padding: 8px; border: 1px solid #6b4a96; border-radius: 6px; background: #160a24; color: #f5eefc; }
+input[type=range] { width: 100%; accent-color: #ff2e88; }
+.file-label { cursor: pointer; }
+.chips, .samples, .exports { display: flex; flex-wrap: wrap; gap: 6px; }
+button { font: inherit; font-weight: 700; padding: 8px 10px; border: 1px solid #6b4a96; border-radius: 6px; background: #3a1c5c; color: #f5eefc; cursor: pointer; }
+button:hover { background: #4a2a6e; }
+button.active { background: #ff2e88; border-color: #ff2e88; color: #fff; }
+button:disabled { opacity: 0.45; cursor: default; }
+.row { display: flex; gap: 6px; }
+.row button { flex: 1; }
+#status { margin: 0; color: #7df3ff; min-height: 1.2em; }
+.stage { flex: 1; display: flex; flex-direction: column; gap: 10px; align-items: center; position: sticky; top: 22px; }
+.stage canvas { width: min(72vh, 100%); height: auto; max-height: 78vh; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6); border-radius: 4px; background: #160a24; }
+body.shot-cover .controls, body.shot-cover .stage .hint { display: none; }
+body.shot-cover .app { padding: 0; max-width: none; }
+body.shot-cover .stage { position: static; width: 100%; }
+body.shot-cover .stage canvas { width: 100vw; height: 100vh; max-height: none; box-shadow: none; border-radius: 0; object-fit: contain; }
+@media (max-width: 900px) {
+  .app { flex-direction: column; }
+  .controls { width: 100%; }
+  .stage { position: static; width: 100%; }
+}
