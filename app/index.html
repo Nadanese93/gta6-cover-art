@@ -1,84 +1,105 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neon Coast Cover Studio — GTA-style cover maker</title>
-<link rel="stylesheet" href="./style.css">
+<title>Neon Skyline Studio — GTA 6-style cover maker</title>
+<link rel="stylesheet" href="css/studio.css">
 </head>
 <body>
-<main class="app">
-  <section class="controls" aria-label="Cover controls">
-    <h1>Neon Coast Cover Studio</h1>
-    <p class="tagline">Turn your photos into a GTA-style multi-panel cover. Everything runs offline, in your browser — your photos never leave this machine.</p>
+<header class="topbar">
+  <h1>Neon Skyline Studio</h1>
+  <p class="tagline">Turn your photos into GTA 6-style cover art. Pick a layout, pick a grade, export a PNG.</p>
+</header>
 
-    <div class="group">
-      <label class="file-label">Photos (1–4)
-        <input id="photos" type="file" accept="image/*" multiple>
-      </label>
-      <p class="hint">Or drag photos onto the page. Click a sample to start fast:</p>
-      <div class="samples" id="samples">
-        <button type="button" data-sample="boulevard">Boulevard</button>
-        <button type="button" data-sample="pier">Pier</button>
-        <button type="button" data-sample="scooter">Scooter</button>
-        <button type="button" data-sample="gasstation">Gas station</button>
-      </div>
-      <p class="hint" id="photoCount">No photos yet — pick a sample above.</p>
-    </div>
-
-    <div class="group">
-      <span class="group-label">Layout</span>
-      <div class="chips" id="layouts"></div>
-    </div>
-
-    <div class="group">
-      <span class="group-label">Grade</span>
-      <div class="chips" id="grades"></div>
-    </div>
-
-    <div class="group">
-      <span class="group-label">Panel <span id="panelName">1</span> — drag the preview to pan, scroll to zoom</span>
-      <label>Zoom <input id="zoom" type="range" min="1" max="3" step="0.05" value="1"></label>
-      <div class="row">
-        <button type="button" id="prevPanel">‹ Prev panel</button>
-        <button type="button" id="nextPanel">Next panel ›</button>
-      </div>
-    </div>
-
-    <div class="group">
-      <label>Title <input id="title" type="text" maxlength="40" value="Sunset Heist"></label>
-      <label>Subtitle <input id="subtitle" type="text" maxlength="40" value="Neon Coast nights"></label>
-      <label>Badge <input id="badge" type="text" maxlength="20" value="Neon Coast"></label>
-      <label>Heat (stars)
-        <select id="heat">
-          <option value="1">★</option>
-          <option value="2">★★</option>
-          <option value="3">★★★</option>
-          <option value="4" selected>★★★★</option>
-          <option value="5">★★★★★</option>
-        </select>
-      </label>
-      <label class="check"><input id="showBadge" type="checkbox" checked> Show badge ribbon</label>
-      <label class="check"><input id="grain" type="checkbox" checked> Film grain</label>
-      <label class="check"><input id="vignette" type="checkbox" checked> Vignette</label>
-    </div>
-
-    <div class="group">
-      <span class="group-label">Export PNG</span>
-      <div class="exports" id="exports"></div>
-      <div class="row">
-        <button type="button" id="undo">Undo</button>
-        <button type="button" id="redo">Redo</button>
-        <button type="button" id="reset">Reset</button>
-      </div>
-      <p id="status" role="status"></p>
-    </div>
-  </section>
+<main class="workbench">
   <section class="stage">
-    <canvas id="cover" width="1080" height="1080" aria-label="The cover preview"></canvas>
-    <p class="hint">Preview is a smaller render of the same pipeline as the export.</p>
+    <div id="dropZone" class="dropzone">
+      <canvas id="preview" width="900" height="900"></canvas>
+      <p class="hint">Drag photos here, or use the upload button. Click a panel to edit it, drag to pan, scroll to zoom.</p>
+    </div>
+    <p id="status" class="status" role="status"></p>
   </section>
+
+  <aside class="panel">
+    <section class="group">
+      <h2>Photos</h2>
+      <label class="upload-btn" for="fileInput">Upload photos (up to 4)</label>
+      <input id="fileInput" type="file" accept="image/*" multiple hidden>
+      <div class="sample-row">
+        <button data-sample="dusk" type="button">Dusk Boulevard</button>
+        <button data-sample="pier" type="button">Pier Dusk</button>
+        <button data-sample="ride" type="button">Street Ride</button>
+        <button data-sample="fuel" type="button">Neon Fuel</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Layout</h2>
+      <div class="btn-row">
+        <button data-layout="solo" type="button">Solo</button>
+        <button data-layout="hero" type="button">Hero Stack</button>
+        <button data-layout="quad" type="button">Quad</button>
+        <button data-layout="strip" type="button">Film Strip</button>
+        <button data-layout="slant" type="button">Slanted</button>
+        <button data-layout="mosaic" type="button">Mosaic</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Grade</h2>
+      <div class="btn-row">
+        <button data-grade="sunset" type="button">Sunset</button>
+        <button data-grade="neon" type="button">Neon</button>
+        <button data-grade="vice" type="button">Vice</button>
+        <button data-grade="noir" type="button">Noir</button>
+        <button data-grade="gold" type="button">Golden Hour</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2>Caption</h2>
+      <label>Title <input id="titleInput" type="text" value="NEON SKYLINE" maxlength="28"></label>
+      <label>Subtitle <input id="subtitleInput" type="text" value="Neon Coast nights" maxlength="48"></label>
+      <label>Badge <input id="badgeInput" type="text" value="NEON COAST" maxlength="18"></label>
+      <div class="heat-row">
+        <span>Heat</span>
+        <button data-heat="1" type="button" aria-label="1 star">★</button>
+        <button data-heat="2" type="button" aria-label="2 stars">★</button>
+        <button data-heat="3" type="button" aria-label="3 stars">★</button>
+        <button data-heat="4" type="button" aria-label="4 stars">★</button>
+        <button data-heat="5" type="button" aria-label="5 stars">★</button>
+      </div>
+    </section>
+
+    <section class="group">
+      <h2 id="panelLabel">Panel 1</h2>
+      <label>Photo in this panel
+        <select id="panelPhoto"></select>
+      </label>
+      <label>Zoom <input id="zoomRange" type="range" min="100" max="400" value="100"></label>
+    </section>
+
+    <section class="group">
+      <h2>Finish</h2>
+      <div class="btn-row">
+        <button data-size="1080x1080" type="button">1080 × 1080</button>
+        <button data-size="1080x1350" type="button">1080 × 1350</button>
+        <button data-size="1920x1080" type="button">1920 × 1080</button>
+        <button data-size="1080x1920" type="button">1080 × 1920</button>
+      </div>
+      <label class="check"><input id="grainToggle" type="checkbox" checked> Film grain</label>
+      <label class="check"><input id="vignetteToggle" type="checkbox" checked> Vignette</label>
+      <div class="actions">
+        <button id="undoBtn" type="button">Undo</button>
+        <button id="redoBtn" type="button">Redo</button>
+        <button id="exportBtn" type="button" class="primary">Export PNG</button>
+      </div>
+    </section>
+  </aside>
 </main>
-<script type="module" src="./src/main.js"></script>
+
+<script src="js/poster.js"></script>
+<script type="module" src="js/workbench.js"></script>
 </body>
 </html>
