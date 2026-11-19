@@ -1,49 +1,66 @@
-/* Palm Bay Cover Studio — screenshot plan.
-   The four screenshots the entry ships: the first by name is the cover the
-   judge sees largest, so it is a wide exported cover; the others show the
-   editor at work and covers in the other post sizes. The Playwright suite
-   drives the app through window.PalmBay and captures each shot with these
-   settings (layout, grade, size, title). */
+// Palm Bay Cover Studio — screenshot plan.
+// The four screenshots the entry ships. Each shot names a layout, a grade
+// and an export size; the harness applies it through window.CoverStudio
+// and captures the preview (or the whole editor for the editor shot).
+// Per-shot panel crops are explicit so faces stay whole in every shot:
+// the boulevard photo's face sits in its top third (y ~0.20), so a very
+// wide hero panel needs its window centred there, not in the middle.
 
-'use strict';
-
-window.PalmBayShots = [
+export const SHOTS = [
   {
     file: '1-cover.jpg',
-    width: 1280, height: 720,
-    setup: { layout: 'hero-left', grade: 'golden', size: 'wide', title: 'PALM BAY' },
-    kind: 'export',
-    note: 'Exported wide cover (1920x1080), scaled to 1280x720.',
+    name: 'cover',
+    layout: 'hero-left',
+    grade: 'sunset',
+    size: [1920, 1080],
+    crops: [
+      { panel: 0, x: 0.5, y: 0.20, z: 1 },
+      { panel: 1, x: 0.5, y: 0.35, z: 1 },
+      { panel: 2, x: 0.5, y: 0.22, z: 1.5 },
+      { panel: 3, x: 0.5, y: 0.30, z: 1.2 },
+    ],
   },
   {
     file: '2-editor.jpg',
-    width: 1280, height: 800,
-    setup: { layout: 'hero-left', grade: 'golden', size: 'wide', title: 'PALM BAY' },
-    kind: 'editor',
-    note: 'The editor in the browser with a photo loaded and the cover preview.',
+    name: 'editor',
+    layout: 'hero-left',
+    grade: 'sunset',
+    size: [1280, 800],
+    crops: [
+      { panel: 0, x: 0.5, y: 0.20, z: 1 },
+      { panel: 1, x: 0.5, y: 0.35, z: 1 },
+      { panel: 2, x: 0.5, y: 0.22, z: 1.5 },
+      { panel: 3, x: 0.5, y: 0.30, z: 1.2 },
+    ],
   },
   {
     file: '3-cover-square.jpg',
-    width: 1024, height: 1024,
-    setup: { layout: 'diagonal-band', grade: 'coral', size: 'square', title: 'PALM BAY',
-      /* Hero crop for this shot only: the diagonal-band hero is very wide
-         (1.79:1), so a centred cover-fit of the portrait hero photo takes
-         its vertical middle and cuts the woman's face off at the top edge.
-         Shifting the hero crop down (dy +5.5) moves the visible window up
-         to the face. The other panels keep the centred crop. The harness
-         applies setup.crops for a shot that carries them, else resets to
-         centred. Zooming out instead is not viable: the panel is wider
-         than the photo, so z < 1 would leave dark side gaps. */
-      crops: [{ x: 0, y: 5.5, z: 1 }, { x: 0, y: 0, z: 1 }, { x: 0, y: 0, z: 1 },
-              { x: 0, y: 0, z: 1 }, { x: 0, y: 0, z: 1 }, { x: 0, y: 0, z: 1 }] },
-    kind: 'export',
-    note: 'Exported square cover (1080x1080), scaled to 1024x1024.',
+    name: 'cover-square',
+    layout: 'diagonal-band',
+    grade: 'golden',
+    size: [1080, 1080],
+    crops: [
+      { panel: 0, x: 0.5, y: 0.20, z: 1 },
+      { panel: 1, x: 0.5, y: 0.35, z: 1 },
+      { panel: 2, x: 0.5, y: 0.22, z: 1.5 },
+      { panel: 3, x: 0.5, y: 0.30, z: 1.2 },
+    ],
   },
   {
     file: '4-cover-portrait.jpg',
-    width: 1024, height: 1280,
-    setup: { layout: 'center-hero', grade: 'neon', size: 'portrait', title: 'PALM BAY' },
-    kind: 'export',
-    note: 'Exported portrait cover (1080x1350), scaled to 1024x1280.',
+    name: 'cover-portrait',
+    layout: 'hero-bottom',
+    grade: 'neon',
+    size: [1080, 1350],
+    crops: [
+      { panel: 0, x: 0.5, y: 0.22, z: 1 },
+      { panel: 1, x: 0.5, y: 0.35, z: 1 },
+      { panel: 2, x: 0.5, y: 0.22, z: 1.5 },
+      { panel: 3, x: 0.5, y: 0.30, z: 1.2 },
+    ],
   },
 ];
+
+export function shotByFile(file) {
+  return SHOTS.find((s) => s.file === file) || SHOTS[0];
+}
