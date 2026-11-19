@@ -1,37 +1,33 @@
-// main.ts — hands the Neon Skyline Studio entry in.
-// Node 22, standard library only. Copies app/ and screenshots/ from beside
-// this file into the output directory, then writes dossier.json with the
-// kit's buildDossier. Paths are anchored on this file's own location, never
-// on the process working directory (the grader runs with cwd != /bot).
+/**
+ * main.ts — hands this entry to the grader.
+ * Copies app/ and screenshots/ into the output directory and writes
+ * /output/dossier.json with buildDossier from vendor/makefun-app.ts.
+ * Paths are resolved from this file, never from process.cwd(): the grader
+ * runs with a working directory that is not the repository.
+ */
+import { cpSync, existsSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
+import { fileURLToPath } from "node:url";
+import { buildDossier } from "./vendor/makefun-app.ts";
 
-import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
-import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
-import { buildDossier } from './vendor/makefun-app.ts';
-
-const repoDir = dirname(fileURLToPath(import.meta.url));
-const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? '/output';
-
-const dossierCaps = {
-  text_max_bytes: 163840,
-  screenshots: { max: 4, max_bytes: 262144 },
-  app_max_files: 993,
-  app_max_bytes: 50331648,
-  app_path_max_bytes: 1000
-};
-
-function copyTree(name: string): void {
-  const from = join(repoDir, name);
-  if (!existsSync(from)) throw new Error(`missing ${name}/ beside main.ts`);
-  cpSync(from, join(outDir, name), { recursive: true });
-}
+const here = fileURLToPath(new URL(".", import.meta.url));
+const outDir = process.env.MAKEFUN_OUTPUT_DIR || "/output";
 
 function main(): void {
   mkdirSync(outDir, { recursive: true });
-  copyTree('app');
-  copyTree('screenshots');
-  const dossier = buildDossier(outDir, dossierCaps);
-  writeFileSync(join(outDir, 'dossier.json'), dossier);
+  for (const name of ["app", "screenshots"]) {
+    const target = join(outDir, name);
+    if (existsSync(target)) rmSync(target, { recursive: true, force: true });
+    cpSync(join(here, name), target, { recursive: true });
+  }
+  const dossier = buildDossier(outDir, {
+    text_max_bytes: 163840,
+    screenshots: { max: 4, max_bytes: 262144 },
+    app_max_files: 993,
+    app_max_bytes: 50331648,
+  });
+  writeFileSync(join(outDir, "dossier.json"), dossier);
+  console.log(`wrote ${outDir}/dossier.json (${dossier.length} bytes)`);
 }
 
 main();
