@@ -3,103 +3,91 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Neon Skyline Studio — GTA 6-style cover maker</title>
+<title>Neon Coast Cover Studio — GTA 6-style cover art maker</title>
 <link rel="stylesheet" href="css/studio.css">
+<style>
+@font-face {
+  font-family: "Anton";
+  src: url("type/anton.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Pacifico";
+  src: url("type/pacifico.ttf") format("truetype");
+  font-weight: 400;
+  font-display: swap;
+}
+</style>
 </head>
 <body>
 <header class="topbar">
-  <h1>Neon Skyline Studio</h1>
-  <p class="tagline">Turn your photos into GTA 6-style cover art. Pick a layout, pick a grade, export a PNG.</p>
+  <div class="brand">
+    <span class="brand-star">★</span>
+    <div>
+      <h1>Neon Coast Cover Studio</h1>
+      <p>Turn any photo into GTA 6-style cover art — offline, in your browser.</p>
+    </div>
+  </div>
+  <div class="top-actions">
+    <button id="undoBtn" class="btn" type="button">↩ Undo</button>
+    <button id="redoBtn" class="btn" type="button">↪ Redo</button>
+    <button id="shuffleBtn" class="btn accent" type="button">🎲 Surprise me</button>
+  </div>
 </header>
 
-<main class="workbench">
-  <section class="stage">
-    <div id="dropZone" class="dropzone">
-      <canvas id="preview" width="900" height="900"></canvas>
-      <p class="hint">Drag photos here, or use the upload button. Click a panel to edit it, drag to pan, scroll to zoom.</p>
+<main class="workspace">
+  <section class="preview-pane">
+    <canvas id="preview" width="960" height="720" aria-label="Cover preview"></canvas>
+    <p class="hint">Click a panel to select it, drag to reframe the photo, use the zoom slider to tighten the crop.</p>
+    <div class="panel-tools">
+      <span id="panelLabel">Panel 1 of 3</span>
+      <label>Zoom <input id="zoomSlider" type="range" min="100" max="260" value="100"></label>
     </div>
-    <p id="status" class="status" role="status"></p>
   </section>
 
-  <aside class="panel">
-    <section class="group">
-      <h2>Photos</h2>
-      <label class="upload-btn" for="fileInput">Upload photos (up to 4)</label>
-      <input id="fileInput" type="file" accept="image/*" multiple hidden>
-      <div class="sample-row">
-        <button data-sample="dusk" type="button">Dusk Boulevard</button>
-        <button data-sample="pier" type="button">Pier Dusk</button>
-        <button data-sample="ride" type="button">Street Ride</button>
-        <button data-sample="fuel" type="button">Neon Fuel</button>
-      </div>
+  <aside class="controls">
+    <section>
+      <h2>1 · Layout</h2>
+      <div id="layoutRow" class="chip-row"></div>
     </section>
 
-    <section class="group">
-      <h2>Layout</h2>
-      <div class="btn-row">
-        <button data-layout="solo" type="button">Solo</button>
-        <button data-layout="hero" type="button">Hero Stack</button>
-        <button data-layout="quad" type="button">Quad</button>
-        <button data-layout="strip" type="button">Film Strip</button>
-        <button data-layout="slant" type="button">Slanted</button>
-        <button data-layout="mosaic" type="button">Mosaic</button>
-      </div>
+    <section>
+      <h2>2 · Colour grade</h2>
+      <div id="gradeRow" class="swatch-row"></div>
     </section>
 
-    <section class="group">
-      <h2>Grade</h2>
-      <div class="btn-row">
-        <button data-grade="sunset" type="button">Sunset</button>
-        <button data-grade="neon" type="button">Neon</button>
-        <button data-grade="vice" type="button">Vice</button>
-        <button data-grade="noir" type="button">Noir</button>
-        <button data-grade="gold" type="button">Golden Hour</button>
-      </div>
-    </section>
-
-    <section class="group">
-      <h2>Caption</h2>
-      <label>Title <input id="titleInput" type="text" value="NEON SKYLINE" maxlength="28"></label>
-      <label>Subtitle <input id="subtitleInput" type="text" value="Neon Coast nights" maxlength="48"></label>
-      <label>Badge <input id="badgeInput" type="text" value="NEON COAST" maxlength="18"></label>
-      <div class="heat-row">
-        <span>Heat</span>
-        <button data-heat="1" type="button" aria-label="1 star">★</button>
-        <button data-heat="2" type="button" aria-label="2 stars">★</button>
-        <button data-heat="3" type="button" aria-label="3 stars">★</button>
-        <button data-heat="4" type="button" aria-label="4 stars">★</button>
-        <button data-heat="5" type="button" aria-label="5 stars">★</button>
-      </div>
-    </section>
-
-    <section class="group">
-      <h2 id="panelLabel">Panel 1</h2>
-      <label>Photo in this panel
-        <select id="panelPhoto"></select>
+    <section>
+      <h2>3 · Photos</h2>
+      <div id="photoTray" class="photo-tray"></div>
+      <label class="upload-btn">＋ Upload your own photo
+        <input id="uploadInput" type="file" accept="image/*" hidden>
       </label>
-      <label>Zoom <input id="zoomRange" type="range" min="100" max="400" value="100"></label>
+      <p class="fine">Photos stay on your machine — nothing is uploaded.</p>
     </section>
 
-    <section class="group">
-      <h2>Finish</h2>
-      <div class="btn-row">
-        <button data-size="1080x1080" type="button">1080 × 1080</button>
-        <button data-size="1080x1350" type="button">1080 × 1350</button>
-        <button data-size="1920x1080" type="button">1920 × 1080</button>
-        <button data-size="1080x1920" type="button">1080 × 1920</button>
-      </div>
-      <label class="check"><input id="grainToggle" type="checkbox" checked> Film grain</label>
-      <label class="check"><input id="vignetteToggle" type="checkbox" checked> Vignette</label>
-      <div class="actions">
-        <button id="undoBtn" type="button">Undo</button>
-        <button id="redoBtn" type="button">Redo</button>
-        <button id="exportBtn" type="button" class="primary">Export PNG</button>
-      </div>
+    <section>
+      <h2>4 · Caption</h2>
+      <label>Title <input id="titleInput" type="text" value="NEON COAST" maxlength="24"></label>
+      <label>Subtitle <input id="subtitleInput" type="text" value="Vice City nights, your story" maxlength="60"></label>
+      <label>Badge <input id="badgeInput" type="text" value="NEON COAST" maxlength="16"></label>
+      <label>Heat meter</label>
+      <div id="starRow" class="star-row"></div>
+    </section>
+
+    <section>
+      <h2>5 · Export PNG</h2>
+      <div id="sizeRow" class="chip-row"></div>
+      <p class="fine">One click per size. The PNG is drawn by the app itself — what you see is what you share.</p>
     </section>
   </aside>
 </main>
 
-<script src="js/poster.js"></script>
-<script type="module" src="js/workbench.js"></script>
+<footer class="statusbar">
+  <span id="statusLine">Loading…</span>
+  <span class="offline-tag">● Offline — no network requests</span>
+</footer>
+
+<script type="module" src="js/studio.js"></script>
 </body>
 </html>
