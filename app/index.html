@@ -3,98 +3,80 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Palm Bay Cover Studio — GTA 6-style cover maker</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='15' fill='%23ffb347'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23ff5e8a'/%3E%3C/svg%3E">
+<title>Palm Bay Cover Studio — GTA 6 Cover Art Maker</title>
 <link rel="stylesheet" href="css/studio.css">
 </head>
 <body>
 <header class="topbar">
   <div class="brand">
-    <span class="brand-mark">☀</span>
+    <span class="brand-mark">PB</span>
     <div>
       <h1>Palm Bay Cover Studio</h1>
       <p>Turn your photos into GTA 6-style cover art — offline, in your browser.</p>
     </div>
   </div>
   <div class="top-actions">
-    <button id="undoBtn" type="button" disabled>↩ Undo</button>
-    <button id="redoBtn" type="button" disabled>↪ Redo</button>
-    <button id="surpriseBtn" type="button" class="accent">✦ Surprise me</button>
+    <button id="undoBtn" type="button" title="Undo">↩ Undo</button>
+    <button id="redoBtn" type="button" title="Redo">↪ Redo</button>
+    <button id="surpriseBtn" type="button" class="accent" title="Random layout, grade and photo order">🎲 Surprise me</button>
   </div>
 </header>
 
-<main class="studio">
-  <section class="preview-pane">
-    <canvas id="preview" width="960" height="540" aria-label="Cover preview"></canvas>
-    <p id="panelLabel" class="hint">Panel 1 selected — drag to move, slider to zoom</p>
-    <div class="crop-row">
-      <label for="zoomRange">Zoom</label>
-      <input id="zoomRange" type="range" min="1" max="2.5" step="0.05" value="1">
-      <button id="centerCropBtn" type="button">Center crop</button>
-    </div>
-    <div class="export-row">
-      <div class="size-group" role="group" aria-label="Export size">
-        <button type="button" class="size-btn" data-size="square">1080 × 1080</button>
-        <button type="button" class="size-btn" data-size="portrait">1080 × 1350</button>
-        <button type="button" class="size-btn active" data-size="wide">1920 × 1080</button>
-        <button type="button" class="size-btn" data-size="tall">1080 × 1920</button>
+<main class="workspace">
+  <aside class="panel controls">
+    <section>
+      <h2>Caption</h2>
+      <label>Title
+        <input id="titleInput" type="text" value="PALM BAY" maxlength="24" autocomplete="off">
+      </label>
+      <label>Subtitle
+        <input id="subtitleInput" type="text" value="where the sun never sets on the fun" maxlength="60" autocomplete="off">
+      </label>
+      <label>Location pill
+        <input id="locationInput" type="text" value="CORAL CAUSEWAY • 7:15 PM" maxlength="40" autocomplete="off">
+      </label>
+    </section>
+
+    <section>
+      <h2>Layout <span class="hint">9 ways to arrange the panels</span></h2>
+      <div id="layoutPicker" class="layout-grid"></div>
+    </section>
+
+    <section>
+      <h2>Grade <span class="hint">warm, photographic, skin-safe</span></h2>
+      <div id="gradePicker" class="grade-grid"></div>
+    </section>
+
+    <section>
+      <h2>Photos <span class="hint">click a panel to crop it — drag to pan, scroll to zoom</span></h2>
+      <div id="photoStrip" class="photo-grid"></div>
+      <label class="upload-btn">＋ Upload your own photo
+        <input id="uploadInput" type="file" accept="image/*" hidden>
+      </label>
+    </section>
+
+    <section>
+      <h2>Export PNG</h2>
+      <div class="export-grid">
+        <button id="export0" type="button">1080 × 1080</button>
+        <button id="export1" type="button">1080 × 1350</button>
+        <button id="export2" type="button">1920 × 1080</button>
+        <button id="export3" type="button">1080 × 1920</button>
       </div>
-      <button id="exportBtn" type="button" class="accent big">Export PNG</button>
-    </div>
-  </section>
-
-  <aside class="controls">
-    <section class="card">
-      <h2>1 · Photos</h2>
-      <p class="card-note">Upload your own (1–4), or cycle the warm sample scenes.</p>
-      <div id="photoSlots" class="slots"></div>
+      <p class="note">Exports the cover exactly as previewed, at full size. Your photos never leave this machine.</p>
     </section>
-
-    <section class="card">
-      <h2>2 · Layout</h2>
-      <p class="card-note">One hero panel + smaller panels, white gutters, diagonal cuts.</p>
-      <div id="layoutPicker" class="picks"></div>
-    </section>
-
-    <section class="card">
-      <h2>3 · Grade</h2>
-      <p class="card-note">Warm sunset grades. Skin-safe: midtones stay natural.</p>
-      <div id="gradePicker" class="picks"></div>
-    </section>
-
-    <section class="card">
-      <h2>4 · Words</h2>
-      <label class="field">Title
-        <input id="titleInput" type="text" value="PALM BAY" maxlength="24">
-      </label>
-      <label class="field">Subtitle (script)
-        <input id="subtitleInput" type="text" value="where the sun never sets on the fun" maxlength="60">
-      </label>
-      <label class="field">Press quote
-        <input id="quoteInput" type="text" value="A FEVER DREAM IN NEON" maxlength="48">
-      </label>
-      <label class="field">Quote source
-        <input id="quoteByInput" type="text" value="THE COAST HERALD" maxlength="32">
-      </label>
-      <label class="field">Location pill
-        <input id="pillInput" type="text" value="CORAL CAUSEWAY • 7:15 PM" maxlength="40">
-      </label>
-      <label class="field">Tag pills (comma separated)
-        <input id="tagsInput" type="text" value="OPEN WORLD, 2 PLAYERS, 4K" maxlength="48">
-      </label>
-      <label class="field">Bottom strip tagline
-        <input id="taglineInput" type="text" value="ONE COAST • NO RULES • COMING SOON" maxlength="48">
-      </label>
-    </section>
-
-    <p class="fineprint">All photos stay on your machine — nothing is uploaded.
-    Fonts: Anton, Pacifico and Barlow Condensed (SIL Open Font License).
-    A fan-made cover maker; not affiliated with Rockstar Games.</p>
   </aside>
+
+  <section class="stage">
+    <div class="stage-head">
+      <span>Live preview — click a panel to select it</span>
+      <span id="stageMeta">1280 × 800</span>
+    </div>
+    <canvas id="preview" width="1280" height="800"></canvas>
+    <p class="stage-foot">Tip: pick a layout, pick a grade, drag any panel to reposition its photo, then export the size you need.</p>
+  </section>
 </main>
 
-<script src="js/poster.js"></script>
-<script src="js/shots.js"></script>
-<script src="js/studio.js"></script>
+<script type="module" src="js/studio.js"></script>
 </body>
 </html>
